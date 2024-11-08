@@ -31,14 +31,15 @@ function App() {
     <div>
       <header>
         <div> Benjamin Sabo </div>
-        {user ? <SignOut/> : <SignIn/>}
+        {user ? <SignOut /> : <SignIn />}
       </header>
-      <section>
-        {user ? <Chat /> : ''}
-      </section>
+      <div className="App">
+        <section>{user ? <Chat /> : ''}</section>
+      </div>
     </div>
   );
 }
+
 
 function SignIn() {
   const signInWithGoogle = () => {
