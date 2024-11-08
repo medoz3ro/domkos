@@ -18,6 +18,8 @@ const firebaseConfig = {
   measurementId: "G-X4C19X83YL"
 };
 
+
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
@@ -28,10 +30,11 @@ function App() {
   return (
     <div>
       <header>
-        {/* You can place your header content here */}
+        <div> Benjamin Sabo </div>
+        {user ? <SignOut/> : <SignIn/>}
       </header>
       <section>
-        {user ? <Chat /> : <SignIn />}
+        {user ? <Chat /> : ''}
       </section>
     </div>
   );
