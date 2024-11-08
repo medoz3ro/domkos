@@ -79,20 +79,24 @@ const dummy = useRef()
 
   const sendMessage = async (e) => {
     e.preventDefault();
-
+    
     const { uid, photoURL } = auth.currentUser;
-
-    await addDoc(messageReferences, {
-      text: formValue,
-      createdAt: serverTimestamp(),
-      uid,
-      photoURL,
-    });
-
-    setFormValue('');
-
-    dummy.current.scrollIntoView({behavior: 'smooth'});
+    
+    try {
+      await addDoc(messageReferences, {
+        text: formValue,
+        createdAt: serverTimestamp(),
+        uid,
+        photoURL,
+      });
+      setFormValue('');
+      dummy.current.scrollIntoView({behavior: 'smooth'});
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Error: Unable to send message. Check your permissions.");
+    }
   };
+  
 
   return (
     <div>
