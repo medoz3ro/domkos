@@ -1,7 +1,7 @@
 import './App.css';
 
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { getFirestore, collection, query, orderBy, limit, serverTimestamp, addDoc } from 'firebase/firestore';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -79,24 +79,20 @@ const dummy = useRef()
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    
+
     const { uid, photoURL } = auth.currentUser;
-    
-    try {
-      await addDoc(messageReferences, {
-        text: formValue,
-        createdAt: serverTimestamp(),
-        uid,
-        photoURL,
-      });
-      setFormValue('');
-      dummy.current.scrollIntoView({behavior: 'smooth'});
-    } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Error: Unable to send message. Check your permissions.");
-    }
+
+    await addDoc(messageReferences, {
+      text: formValue,
+      createdAt: serverTimestamp(),
+      uid,
+      photoURL,
+    });
+
+    setFormValue('');
+
+    dummy.current.scrollIntoView({behavior: 'smooth'});
   };
-  
 
   return (
     <div>
