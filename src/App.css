@@ -46,14 +46,14 @@ main {
   overflow-y: auto; /* Allows scrolling in the main content */
 }
 
-
 form {
   display: flex;
+  justify-content: center; /* Centers the button horizontally */
   padding: 10px;
   background-color: #f0f0f0;
   border-top: 1px solid #e0e0e0;
   position: sticky;
-  bottom: 0; /* Sticks form to the bottom of .App container */
+  bottom: 0; /* Keeps the form at the bottom of .App container */
 }
 
 input[type="text"] {
@@ -79,6 +79,7 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #357ab9;
 }
+
 
 /* Chat message styles */
 .message {
