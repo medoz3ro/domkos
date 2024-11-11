@@ -1,16 +1,14 @@
-/* Basic layout settings for the app */
+/* Original styling */
 body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: efefe9;
+  background-color: #efefe9;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
-
-
 
 header {
   position: fixed;
@@ -22,38 +20,42 @@ header {
   width: 100%;
   text-align: center;
   padding: 10px;
-  z-index: 1000; /* Ensures the header stays above other content */
+  z-index: 1000;
 }
 
-
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 95vh; /* Adjusted height to account for header */
+}
 
 .App {
   display: flex;
   flex-direction: column;
-  height: 85vh; /* Reduced height to account for header */
+  height: calc(100vh - 60px); /* Adjusted height to account for header */
   width: 100%;
-  max-width: 600px;
+  min-width: 600px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-top: 50px; /* Adjust based on header height */
+  margin-top: 50px;
 }
 
 main {
   flex: 1;
   padding: 15px;
-  overflow-y: auto; /* Allows scrolling in the main content */
+  overflow-y: auto; /* Enables scrolling */
 }
 
 form {
   display: flex;
-  justify-content: center; /* Centers the button horizontally */
+  justify-content: center;
   padding: 10px;
   background-color: #f0f0f0;
   border-top: 1px solid #e0e0e0;
   position: sticky;
-  bottom: 0; /* Keeps the form at the bottom of .App container */
+  bottom: 0;
 }
 
 input[type="text"] {
@@ -80,36 +82,53 @@ button[type="submit"]:hover {
   background-color: #357ab9;
 }
 
+button[type="submit"]:disabled,
+.disabled-button {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
 
-/* Chat message styles */
+/* Base message container styling */
 .message {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 10px;
-  width: 500px;
-  min-width: 70%;
+  width: 100%;
   max-width: 70%;
 }
 
+/* Sent messages: right-aligned */
 .sent {
-  align-self: flex-end;
+  margin-left: auto; /* Pushes the sent message to the right */
   background-color: #4a90e2;
   color: white;
   border-radius: 15px 15px 0 15px;
-  padding: 10px;
+  padding: 5px;
+  padding-right: 5px;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  justify-content: flex-end;
 }
 
+/* Received messages: left-aligned */
 .received {
-  align-self: flex-start;
+  margin-right: auto; /* Pushes the received message to the left */
   background-color: #e0e0e0;
   color: black;
   border-radius: 15px 15px 15px 0;
-  padding: 10px;
+  padding: 5px;
+  padding-left: 5px;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  justify-content: flex-start;
 }
 
-/* Avatar styles */
+/* Avatar styling */
 .message img {
   width: 30px;
   height: 30px;
@@ -117,6 +136,51 @@ button[type="submit"]:hover {
   margin-right: 10px;
 }
 
+/* Hide avatar on sent messages */
 .message.sent img {
   display: none;
+}
+
+
+/* Responsive adjustments for mobile screens */
+@media (max-width: 600px) {
+  .App {
+    margin-top: 60px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .chat-container {
+    height: 90vh;
+  }
+
+  main {
+    padding: 10px;
+  }
+
+  input[type="text"] {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  button[type="submit"] {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  .message {
+    width: 100%;
+    max-width: 85%;
+  }
+
+  .sent,
+  .received {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .message img {
+    width: 25px;
+    height: 25px;
+  }
 }

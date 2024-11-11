@@ -2,7 +2,7 @@ import './App.css';
 
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { getFirestore, collection, query, orderBy, limit, serverTimestamp, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, serverTimestamp, addDoc } from 'firebase/firestore';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -26,6 +26,7 @@ const firestore = getFirestore(app);
 
 function App() {
   const [user] = useAuthState(auth);
+
 
   return (
     <div>
@@ -73,41 +74,56 @@ function Chat() {
 const dummy = useRef()
 
   const messageReferences = collection(firestore, 'poruke');
-  const messagesQuery = query(messageReferences, orderBy('createdAt'), limit(25));
+  const messagesQuery = query(messageReferences, orderBy('createdAt'));
   const [messages] = useCollectionData(messagesQuery, { idField: 'id' });
 
   const [formValue, setFormValue] = useState('');
 
   const sendMessage = async (e) => {
     e.preventDefault();
-
+  
+    // Prevent empty messages from being sent
+    if (!formValue.trim()) {
+      return;
+    }
+  
     const { uid, photoURL } = auth.currentUser;
-
+  
     await addDoc(messageReferences, {
       text: formValue,
       createdAt: serverTimestamp(),
       uid,
       photoURL,
     });
-
-    setFormValue('');
-
-    dummy.current.scrollIntoView({behavior: 'smooth'});
+  
+    setFormValue(''); // Clear the input field
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
   };
-
+  
   return (
-    <div>
+    <div className="chat-container">
       <main>
         {messages && messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <div ref={dummy}></div>
       </main>
-
+  
       <form onSubmit={sendMessage}>
-        <input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
-        <button type='submit'>Pošalji</button>
+        <input
+          type="text"
+          value={formValue}
+          onChange={(e) => setFormValue(e.target.value)}
+        />
+        <button
+          type="submit"
+          disabled={!formValue.trim()}
+          className={!formValue.trim() ? 'disabled-button' : ''}
+        >
+          Pošalji
+        </button>
       </form>
     </div>
   );
+  
 }
 
 export default App;
