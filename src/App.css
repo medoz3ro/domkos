@@ -142,12 +142,52 @@ button[type="submit"]:disabled,
 }
 
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 450px;
+  text-align: center;
+}
+
+.modal input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+}
+
+.modal button {
+  margin-top: 10px;
+}
+
+
+/* Display name styling */
+.display-name {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
+  margin-left: 40px; /* Offset to align with the message */
+}
+
+
 /* Responsive adjustments for mobile screens */
 @media (max-width: 600px) {
   .App {
     margin-top: 60px;
-    width: 100%;
-    max-width: 100%;
+    width: 200px;
   }
 
   .chat-container {
@@ -186,9 +226,56 @@ button[type="submit"]:disabled,
 }
 
 
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #888;
+  font-size: 14px;
+}
 
+.dot-typing {
+  display: inline-flex;
+  gap: 5px;
+}
 
+.dot-typing span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #3b5998;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
 
+.dot-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
 
+.dot-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
 
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
 
+@keyframes blink {
+  0% {
+    opacity: .1;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .1;
+  }
+}

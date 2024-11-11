@@ -1,9 +1,8 @@
 import './App.css';
 
-
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { getFirestore, collection, query, orderBy, serverTimestamp, addDoc, doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, serverTimestamp, addDoc, doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -20,15 +19,32 @@ const firebaseConfig = {
   measurementId: "G-X4C19X83YL"
 };
 
-
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 
 function App() {
   const [user] = useAuthState(auth);
+  const [displayName, setDisplayName] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      const userRef = doc(firestore, 'users', user.uid);
+
+      const timeoutId = setTimeout(() => {
+        getDoc(userRef).then((docSnap) => {
+          if (docSnap.exists()) {
+            setDisplayName(docSnap.data().displayName);
+          } else {
+            setShowModal(true);
+          }
+        });
+      }, 10);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [user]);
 
   return (
     <div>
@@ -37,12 +53,21 @@ function App() {
         {user ? <SignOut /> : <SignIn />}
       </header>
       <div className="App">
-        <section>{user ? <Chat /> : ''}</section>
+        <section>
+          {user ? (
+            displayName ? (
+              <Chat displayName={displayName} />
+            ) : (
+              showModal && <DisplayNameModal setDisplayName={setDisplayName} />
+            )
+          ) : (
+            ''
+          )}
+        </section>
       </div>
     </div>
   );
 }
-
 
 function SignIn() {
   const signInWithGoogle = () => {
@@ -59,58 +84,84 @@ function SignOut() {
   );
 }
 
-function ChatMessage(props) {
-  const { text, uid, photoURL } = props.message;
+function DisplayNameModal({ setDisplayName }) {
+  const [inputValue, setInputValue] = useState('');
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (inputValue.trim()) {
+      const userRef = doc(firestore, 'users', auth.currentUser.uid);
+      
+      await setDoc(userRef, { displayName: inputValue.trim() }, { merge: true });
+      setDisplayName(inputValue.trim());
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <h2>Set Your Display Name</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="User name"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function ChatMessage({ message }) {
+  const { text, uid, photoURL, displayName } = message;
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
   
-  // State for animated text
   const [animatedText, setAnimatedText] = useState('');
   
   useEffect(() => {
     let i = 0;
-    const speed = 50; // Speed of typing in milliseconds
+    const speed = 50;
 
-    // Function to type out the text character by character
     function typeWriter() {
       if (i <= text.length) {
-        setAnimatedText(text.substring(0, i)); // Set text up to the current index
+        setAnimatedText(text.substring(0, i));
         i++;
         setTimeout(typeWriter, speed);
       }
     }
 
-    setAnimatedText(''); // Clear the animatedText when a new message is received
+    setAnimatedText('');
     typeWriter();
-
-  }, [text]); // Run the effect every time a new message text is received
+  }, [text]);
 
   return (
     <div className={`message ${messageClass}`}>
+      {uid !== auth.currentUser.uid && <p className="display-name">{displayName}</p>}
       <img src={photoURL} alt="User" />
       <p>{animatedText}</p>
     </div>
   );
 }
 
-
-function Chat() {
+function Chat({ displayName }) {
   const dummy = useRef();
   const messageReferences = collection(firestore, 'poruke');
   const messagesQuery = query(messageReferences, orderBy('createdAt'));
   const [messages] = useCollectionData(messagesQuery, { idField: 'id' });
   const [formValue, setFormValue] = useState('');
-  const [typingUser, setTypingUser] = useState(null);
+  const [typingUsers, setTypingUsers] = useState([]);
 
-  // Debounced function to update typing status
   const updateTypingStatus = debounce(async (isTyping) => {
     const typingDocRef = doc(firestore, 'typingStatus', 'status');
     if (isTyping) {
-      await setDoc(typingDocRef, { uid: auth.currentUser.uid, name: auth.currentUser.displayName }, { merge: true });
+      await setDoc(typingDocRef, { uid: auth.currentUser.uid, name: displayName }, { merge: true });
     } else {
       await setDoc(typingDocRef, { uid: null, name: null }, { merge: true });
     }
-  }, 500);
+  }, 100);
 
   const handleInputChange = (e) => {
     setFormValue(e.target.value);
@@ -119,7 +170,6 @@ function Chat() {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-
     if (!formValue.trim()) return;
 
     const { uid, photoURL } = auth.currentUser;
@@ -129,6 +179,7 @@ function Chat() {
       createdAt: serverTimestamp(),
       uid,
       photoURL,
+      displayName,
     });
 
     setFormValue('');
@@ -136,45 +187,57 @@ function Chat() {
     dummy.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Listen for changes in typing status
   useEffect(() => {
     const typingDocRef = doc(firestore, 'typingStatus', 'status');
     const unsubscribe = onSnapshot(typingDocRef, (doc) => {
       if (doc.exists()) {
         const data = doc.data();
-        setTypingUser(data.uid !== auth.currentUser.uid ? data.name : null);
+        if (data.uid && data.uid !== auth.currentUser.uid) {
+          setTypingUsers((prevUsers) => [...new Set([...prevUsers, data.name])]);
+        } else {
+          setTypingUsers((prevUsers) => prevUsers.filter((name) => name !== data.name));
+        }
       }
     });
     return () => unsubscribe();
   }, []);
 
+  const typingIndicator =
+    typingUsers.length > 1
+      ? 'Multiple people are typing'
+      : typingUsers.length === 1
+      ? `${typingUsers[0]} is typing`
+      : null;
+
   return (
     <div className="chat-container">
-
       <main>
         {messages && messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-        {typingUser && (
-          <div className="typing-indicator">
-            <span>{typingUser} is typing</span>
-            <div className="dot-typing">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-        )}
         <div ref={dummy}></div>
       </main>
+
+      {typingIndicator && (
+        <div className="typing-indicator">
+          <span>{typingIndicator}</span>
+          <div className="dot-typing">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={sendMessage}>
         <input
           type="text"
           value={formValue}
           onChange={handleInputChange}
+          disabled={!displayName}
+          placeholder={displayName ? "Type a message" : "Set a display name first"}
         />
         <button
           type="submit"
-          disabled={!formValue.trim()}
+          disabled={!formValue.trim() || !displayName}
           className={!formValue.trim() ? 'disabled-button' : ''}
         >
           Pošalji
