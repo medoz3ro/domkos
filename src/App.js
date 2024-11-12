@@ -43,26 +43,19 @@ function App() {
     if (user) {
       const userRef = doc(firestore, "users", user.uid);
 
-      const timeoutId = setTimeout(() => {
-        getDoc(userRef).then((docSnap) => {
-          if (docSnap.exists()) {
-            setDisplayName(docSnap.data().displayName);
-          } else {
-            setShowModal(true);
-          }
-        });
-      }, 10);
-
-      return () => clearTimeout(timeoutId);
+      getDoc(userRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          setDisplayName(docSnap.data().displayName);
+        } else {
+          setShowModal(true);
+        }
+      });
     }
   }, [user]);
 
   return (
     <div>
-      <header>
-        <div> Benjamin Sabo </div>
-        {user ? <SignOut /> : <SignIn />}
-      </header>
+      <Header user={user} displayName={displayName} />
       <div className="App">
         <section>
           {user ? (
@@ -80,21 +73,41 @@ function App() {
   );
 }
 
+function Header({ user, displayName }) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const handleSignOut = () => auth.signOut();
+
+  return (
+    <header>
+      <div className="header-title">💬 Benjamin Sabo 💬</div>
+      <div className="header-profile">
+        {user ? (
+          <div className="profile" onClick={toggleDropdown}>
+            <img src={user.photoURL} alt="User" className="profile-pic" />
+            <span className="display-name-header">{displayName}</span>
+            {isDropdownOpen && (
+              <div className="dropdown-menu">
+                <button onClick={handleSignOut}>Odjavi se</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <SignIn />
+        )}
+      </div>
+    </header>
+  );
+}
+
 function SignIn() {
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider);
   };
 
-  return <button onClick={signInWithGoogle}>Google prijava</button>;
-}
-
-function SignOut() {
-  return (
-    auth.currentUser && (
-      <button onClick={() => auth.signOut()}>Odjavi se</button>
-    )
-  );
+  return <button onClick={signInWithGoogle}>Prijavi se</button>;
 }
 
 function DisplayNameModal({ setDisplayName }) {
@@ -191,21 +204,9 @@ function Chat({ displayName }) {
     }
   }, 100);
 
-  // Scroll to bottom on initial load
   useEffect(() => {
     if (dummy.current) {
-      dummy.current.scrollIntoView(); // Scroll without smooth behavior on load
-    }
-  }, []);
-
-  // Scroll to bottom whenever messages are updated
-  // Scroll to bottom on initial load and whenever messages are updated
-  useEffect(() => {
-    if (dummy.current) {
-      // Delay the scroll to ensure messages have rendered
-      setTimeout(() => {
-        dummy.current.scrollIntoView({ behavior: "smooth" });
-      }, 100); // You can adjust this delay if needed
+      dummy.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 

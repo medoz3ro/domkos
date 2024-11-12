@@ -241,6 +241,66 @@ button[type="submit"]:disabled,
   }
 }
 
+.header-title {
+  float: left;
+  font-size: 1.2em;
+}
+
+.header-profile {
+  float: right;
+  position: relative;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  margin-right: 25px;
+}
+
+.profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 4px; /* Adjust this to 0 if you want it to be directly next to the name */
+}
+
+.display-name-header {
+  max-width: 120px; /* Adjust based on desired width */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #ffffff;
+  margin: 0; /* Remove margin to bring closer to profile picture */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-menu button:hover {
+  background-color: #555;
+}
+
+
 .typing-indicator {
   display: flex;
   align-items: center;
