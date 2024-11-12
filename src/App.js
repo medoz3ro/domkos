@@ -201,7 +201,7 @@ function ChatMessage({ message }) {
 }
 
 function Chat({ displayName }) {
-  const dummy = useRef();
+  const dummy = useRef(); // Reference to the bottom of the chat
   const messageReferences = collection(firestore, "poruke");
   const messagesQuery = query(messageReferences, orderBy("createdAt"));
   const [messages] = useCollectionData(messagesQuery, { idField: "id" });
@@ -223,6 +223,7 @@ function Chat({ displayName }) {
   }, 100);
 
   useEffect(() => {
+    // Scroll to the bottom when messages are updated
     if (dummy.current) {
       dummy.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -234,6 +235,17 @@ function Chat({ displayName }) {
     setIsLimitReached(value.length >= 100);
     updateTypingStatus(Boolean(value.trim()));
   };
+
+  useEffect(() => {
+    // Scroll to the bottom with a delay to ensure full rendering of messages
+    const scrollToBottom = () => {
+      if (dummy.current) {
+        dummy.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    const timeoutId = setTimeout(scrollToBottom, 100); // 100ms delay
+    return () => clearTimeout(timeoutId);
+  }, [messages]); // Triggers on message update
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -252,7 +264,13 @@ function Chat({ displayName }) {
     setFormValue("");
     setIsLimitReached(false);
     updateTypingStatus(false);
-    dummy.current.scrollIntoView({ behavior: "smooth" });
+
+    // Scroll to the bottom smoothly after sending a message
+    setTimeout(() => {
+      if (dummy.current) {
+        dummy.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100); // Short delay to allow rendering
   };
 
   useEffect(() => {
@@ -286,7 +304,7 @@ function Chat({ displayName }) {
       <main>
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-        <div ref={dummy}></div>
+        <div ref={dummy}></div> {/* Dummy div at the bottom to scroll to */}
       </main>
 
       {typingIndicator && (
