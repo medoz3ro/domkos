@@ -302,30 +302,35 @@ button[type="submit"]:disabled,
 }
 
 
+/* Adjust the dropdown menu to align right below the profile */
 .dropdown-menu {
   position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #333;
-  border-radius: 5px;
+  top: 100%; /* Position directly below the profile */
+  right: 0; /* Align to the right edge of the profile picture */
+  background-color: #223030; /* Match with the button color */
+  border-radius: 8px; /* Rounded corners for consistency */
   overflow: hidden;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  min-width: 150px; /* Ensure width is sufficient for the button text */
 }
 
+/* Style individual dropdown buttons to match overall theme */
 .dropdown-menu button {
   background: none;
   border: none;
   color: #ffffff;
-  padding: 10px;
+  padding: 10px 15px;
   cursor: pointer;
   width: 100%;
-  text-align: left;
+  text-align: center; /* Center text alignment */
+  font-size: 14px;
 }
 
 .dropdown-menu button:hover {
-  background-color: #555;
+  background-color: #555; /* Darker shade for hover effect */
 }
+
 
 
 .typing-indicator {

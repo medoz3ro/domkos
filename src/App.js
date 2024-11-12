@@ -75,14 +75,28 @@ function App() {
 
 function Header({ user, displayName }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const handleSignOut = () => auth.signOut();
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header>
       <div className="header-title">💬 Benjamin Sabo 💬</div>
-      <div className="header-profile">
+      <div className="header-profile" ref={dropdownRef}>
         {user ? (
           <div className="profile" onClick={toggleDropdown}>
             <img src={user.photoURL} alt="User" className="profile-pic" />
