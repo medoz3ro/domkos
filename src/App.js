@@ -69,6 +69,7 @@ function App() {
   );
 }
 
+
 function SignIn() {
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -139,9 +140,13 @@ function ChatMessage({ message }) {
 
   return (
     <div className={`message ${messageClass}`}>
-      {uid !== auth.currentUser.uid && <p className="display-name">{displayName}</p>}
-      <img src={photoURL} alt="User" />
-      <p>{animatedText}</p>
+      <div className='message-look'>
+        <img src={photoURL} alt="User" />
+       <div>
+          {uid !== auth.currentUser.uid && <p className="display-name">{displayName}</p>}
+          <p>{animatedText}</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -153,6 +158,7 @@ function Chat({ displayName }) {
   const [messages] = useCollectionData(messagesQuery, { idField: 'id' });
   const [formValue, setFormValue] = useState('');
   const [typingUsers, setTypingUsers] = useState([]);
+  const [isLimitReached, setIsLimitReached] = useState(false); // New state for character limit
 
   const updateTypingStatus = debounce(async (isTyping) => {
     const typingDocRef = doc(firestore, 'typingStatus', 'status');
@@ -164,8 +170,10 @@ function Chat({ displayName }) {
   }, 100);
 
   const handleInputChange = (e) => {
-    setFormValue(e.target.value);
-    updateTypingStatus(Boolean(e.target.value.trim()));
+    const value = e.target.value;
+    setFormValue(value);
+    setIsLimitReached(value.length >= 100); // Check if limit is reached
+    updateTypingStatus(Boolean(value.trim()));
   };
 
   const sendMessage = async (e) => {
@@ -183,6 +191,7 @@ function Chat({ displayName }) {
     });
 
     setFormValue('');
+    setIsLimitReached(false); // Reset character limit message after sending
     updateTypingStatus(false);
     dummy.current.scrollIntoView({ behavior: 'smooth' });
   };
@@ -227,6 +236,12 @@ function Chat({ displayName }) {
         </div>
       )}
 
+{isLimitReached && (
+        <p style={{ color: 'red', fontSize: '0.9rem', marginTop: '5px' }}>
+          Character limit reached (100 characters).
+        </p>
+      )}
+
       <form onSubmit={sendMessage}>
         <input
           type="text"
@@ -234,6 +249,7 @@ function Chat({ displayName }) {
           onChange={handleInputChange}
           disabled={!displayName}
           placeholder={displayName ? "Type a message" : "Set a display name first"}
+          maxLength={100} 
         />
         <button
           type="submit"
@@ -243,8 +259,11 @@ function Chat({ displayName }) {
           Pošalji
         </button>
       </form>
+      
     </div>
   );
 }
+
+
 
 export default App;

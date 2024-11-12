@@ -1,4 +1,3 @@
-/* Original styling */
 body {
   margin: 0;
   padding: 0;
@@ -26,15 +25,14 @@ header {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 95vh; /* Adjusted height to account for header */
+  height: 95vh;
 }
 
 .App {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px); /* Adjusted height to account for header */
-  width: 100%;
-  min-width: 600px;
+  height: calc(100vh - 60px);
+  width: 500px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -45,7 +43,7 @@ header {
 main {
   flex: 1;
   padding: 15px;
-  overflow-y: auto; /* Enables scrolling */
+  overflow-y: auto;
 }
 
 form {
@@ -89,58 +87,80 @@ button[type="submit"]:disabled,
   cursor: not-allowed;
 }
 
-/* Base message container styling */
 .message {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 10px;
   width: 100%;
   max-width: 70%;
+  flex-wrap: wrap;
 }
 
-/* Sent messages: right-aligned */
 .sent {
-  margin-left: auto; /* Pushes the sent message to the right */
+  margin-left: auto;
   background-color: #4a90e2;
   color: white;
   border-radius: 15px 15px 0 15px;
-  padding: 2px;
-  padding-right: 5px;
+  padding: 8px 12px;
   font-size: 14px;
   display: flex;
-  align-items: center;
-  text-align: right;
-  justify-content: flex-end;
+  flex-direction: column;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
-/* Received messages: left-aligned */
 .received {
-  margin-right: auto; /* Pushes the received message to the left */
+  margin-right: auto;
   background-color: #e0e0e0;
   color: black;
   border-radius: 15px 15px 15px 0;
-  padding: 2px;
-  padding-left: 5px;
+  padding: 8px 12px;
   font-size: 14px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   text-align: left;
-  justify-content: flex-start;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
-/* Avatar styling */
 .message img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
+  align-self: flex-start;
 }
 
-/* Hide avatar on sent messages */
 .message.sent img {
   display: none;
 }
 
+.message-look {
+  display: flex;
+  align-items: flex-start;
+}
+
+.message-look img {
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.message-look div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.display-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.message p {
+  margin: 2px;
+}
 
 .modal-overlay {
   position: fixed;
@@ -173,21 +193,17 @@ button[type="submit"]:disabled,
   margin-top: 10px;
 }
 
-
-/* Display name styling */
 .display-name {
   font-size: 12px;
   color: #888;
   margin-bottom: 2px;
-  margin-left: 40px; /* Offset to align with the message */
+  margin-left: 40px;
 }
 
-
-/* Responsive adjustments for mobile screens */
 @media (max-width: 600px) {
   .App {
     margin-top: 60px;
-    width: 200px;
+    width: 300px;
   }
 
   .chat-container {
@@ -224,7 +240,6 @@ button[type="submit"]:disabled,
     height: 25px;
   }
 }
-
 
 .typing-indicator {
   display: flex;
