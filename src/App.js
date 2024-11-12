@@ -107,7 +107,11 @@ function SignIn() {
     signInWithPopup(auth, provider);
   };
 
-  return <button onClick={signInWithGoogle}>Prijavi se</button>;
+  return (
+    <button onClick={signInWithGoogle} className="sign-in-button">
+      Prijavi se
+    </button>
+  );
 }
 
 function DisplayNameModal({ setDisplayName }) {

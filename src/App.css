@@ -14,12 +14,15 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #333;
+  background-color: #959d90;
   color: #ffffff;
   width: 100%;
   text-align: center;
   padding: 10px;
   z-index: 1000;
+  display: flex;               /* Use Flexbox */
+  justify-content: space-between; /* Space between title and profile */
+  align-items: center;   
 }
 
 .chat-container {
@@ -33,7 +36,8 @@ header {
   flex-direction: column;
   height: calc(100vh - 60px);
   width: 500px;
-  background-color: #ffffff;
+
+  background-color: #e8d9cd;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -50,7 +54,7 @@ form {
   display: flex;
   justify-content: center;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: #e8d9cd;
   border-top: 1px solid #e0e0e0;
   position: sticky;
   bottom: 0;
@@ -64,20 +68,22 @@ input[type="text"] {
   border-radius: 20px;
   margin-right: 10px;
   outline: none;
+
+  background-color: #efefe9;
 }
 
 button[type="submit"] {
   padding: 12px 20px;
   font-size: 16px;
   border: none;
-  background-color: #4a90e2;
+  background-color: #223030;
   color: white;
   border-radius: 20px;
   cursor: pointer;
 }
 
 button[type="submit"]:hover {
-  background-color: #357ab9;
+  background-color: #223030;
 }
 
 button[type="submit"]:disabled,
@@ -98,7 +104,6 @@ button[type="submit"]:disabled,
 
 .sent {
   margin-left: auto;
-  background-color: #4a90e2;
   color: white;
   border-radius: 15px 15px 0 15px;
   padding: 8px 12px;
@@ -108,6 +113,9 @@ button[type="submit"]:disabled,
   text-align: left;
   word-wrap: break-word;
   white-space: normal;
+
+
+  background-color: #959d90;
 }
 
 .received {
@@ -122,6 +130,9 @@ button[type="submit"]:disabled,
   text-align: left;
   word-wrap: break-word;
   white-space: normal;
+
+
+  background-color: #efefe9;
 }
 
 .message img {
@@ -242,38 +253,54 @@ button[type="submit"]:disabled,
 }
 
 .header-title {
-  float: left;
-  font-size: 1.2em;
+  font-size: 1.5em;
+  text-align: center;
 }
 
 .header-profile {
-  float: right;
-  position: relative;
+  display: flex;
+  align-items: center;          /* Center items vertically in profile section */
 }
 
 .profile {
   display: flex;
   align-items: center;
   cursor: pointer;
-  position: relative;
   margin-right: 25px;
+}
+
+.display-name-header {
+  font-size: 16px;       /* Match font size to "Prijavi se" button */
+  font-weight: bold;     /* Make text bold to match button */
+  color: white;          /* Ensure the color matches */
+  margin: 0;
 }
 
 .profile-pic {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  margin-right: 4px; /* Adjust this to 0 if you want it to be directly next to the name */
+  margin-right: 8px;          /* Space between image and text */
 }
 
-.display-name-header {
-  max-width: 120px; /* Adjust based on desired width */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #ffffff;
-  margin: 0; /* Remove margin to bring closer to profile picture */
+
+
+/* Style for Prijavi se button */
+.sign-in-button {
+  padding: 12px 20px;       /* Same padding as "Pošalji" button */
+  font-size: 16px;
+  border: none;
+  background-color: #223030; /* Same color as "Pošalji" button */
+  color: white;
+  border-radius: 20px;       /* Rounded corners */
+  cursor: pointer;
+  margin-right: 25px;        /* Move the button slightly to the left */
 }
+
+.sign-in-button:hover {
+  background-color: #223030;
+}
+
 
 .dropdown-menu {
   position: absolute;
