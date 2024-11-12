@@ -20,9 +20,9 @@ header {
   text-align: center;
   padding: 10px;
   z-index: 1000;
-  display: flex;               /* Use Flexbox */
-  justify-content: space-between; /* Space between title and profile */
-  align-items: center;   
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .chat-container {
@@ -36,7 +36,6 @@ header {
   flex-direction: column;
   height: calc(100vh - 60px);
   width: 500px;
-
   background-color: #e8d9cd;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -68,7 +67,6 @@ input[type="text"] {
   border-radius: 20px;
   margin-right: 10px;
   outline: none;
-
   background-color: #efefe9;
 }
 
@@ -113,14 +111,12 @@ button[type="submit"]:disabled,
   text-align: left;
   word-wrap: break-word;
   white-space: normal;
-
-
   background-color: #959d90;
 }
 
 .received {
   margin-right: auto;
-  background-color: #e0e0e0;
+  background-color: #efefe9;
   color: black;
   border-radius: 15px 15px 15px 0;
   padding: 8px 12px;
@@ -130,9 +126,6 @@ button[type="submit"]:disabled,
   text-align: left;
   word-wrap: break-word;
   white-space: normal;
-
-
-  background-color: #efefe9;
 }
 
 .message img {
@@ -204,11 +197,109 @@ button[type="submit"]:disabled,
   margin-top: 10px;
 }
 
-.display-name {
-  font-size: 12px;
+.display-name-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 25px;
+}
+
+.profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.sign-in-button {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #223030;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 25px;
+}
+
+.sign-in-button:hover {
+  background-color: #223030;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #223030;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 150px;
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  padding: 10px 15px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+}
+
+.dropdown-menu button:hover {
+  background-color: #555;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: #888;
-  margin-bottom: 2px;
-  margin-left: 40px;
+  font-size: 14px;
+}
+
+.dot-typing {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.dot-typing span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #3b5998;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+.dot-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }
 
 @media (max-width: 600px) {
@@ -259,130 +350,13 @@ button[type="submit"]:disabled,
 
 .header-profile {
   display: flex;
-  align-items: center;          /* Center items vertically in profile section */
-}
-
-.profile {
-  display: flex;
   align-items: center;
-  cursor: pointer;
-  margin-right: 25px;
 }
 
-.display-name-header {
-  font-size: 16px;       /* Match font size to "Prijavi se" button */
-  font-weight: bold;     /* Make text bold to match button */
-  color: white;          /* Ensure the color matches */
-  margin: 0;
-}
-
-.profile-pic {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 8px;          /* Space between image and text */
-}
-
-
-
-/* Style for Prijavi se button */
-.sign-in-button {
-  padding: 12px 20px;       /* Same padding as "Pošalji" button */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea {
   font-size: 16px;
-  border: none;
-  background-color: #223030; /* Same color as "Pošalji" button */
-  color: white;
-  border-radius: 20px;       /* Rounded corners */
-  cursor: pointer;
-  margin-right: 25px;        /* Move the button slightly to the left */
-}
-
-.sign-in-button:hover {
-  background-color: #223030;
-}
-
-
-/* Adjust the dropdown menu to align right below the profile */
-.dropdown-menu {
-  position: absolute;
-  top: 100%; /* Position directly below the profile */
-  right: 0; /* Align to the right edge of the profile picture */
-  background-color: #223030; /* Match with the button color */
-  border-radius: 8px; /* Rounded corners for consistency */
-  overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  min-width: 150px; /* Ensure width is sufficient for the button text */
-}
-
-/* Style individual dropdown buttons to match overall theme */
-.dropdown-menu button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  padding: 10px 15px;
-  cursor: pointer;
-  width: 100%;
-  text-align: center; /* Center text alignment */
-  font-size: 14px;
-}
-
-.dropdown-menu button:hover {
-  background-color: #555; /* Darker shade for hover effect */
-}
-
-
-
-.typing-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #888;
-  font-size: 14px;
-}
-
-.dot-typing {
-  display: inline-flex;
-  gap: 5px;
-}
-
-.dot-typing span {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background-color: #3b5998;
-  border-radius: 50%;
-  animation: blink 1.5s infinite;
-}
-
-.dot-typing span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.dot-typing span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes blink {
-  0% {
-    opacity: 0.2;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.2;
-  }
-}
-
-@keyframes blink {
-  0% {
-    opacity: .1;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: .1;
-  }
 }

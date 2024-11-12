@@ -1,5 +1,7 @@
+// Import CSS for App styling
 import "./App.css";
 
+// Import Firebase initialization and necessary methods for authentication
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import {
@@ -15,11 +17,13 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
+// Import hooks for Firebase authentication and Firestore data
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useEffect, useState, useRef } from "react";
 import { debounce } from "lodash";
 
+// Firebase configuration object
 const firebaseConfig = {
   apiKey: "AIzaSyAvy0w851FbcVUXZX51JTLqpPGpXOVMHZ8",
   authDomain: "domko-cbe7c.firebaseapp.com",
@@ -30,15 +34,18 @@ const firebaseConfig = {
   measurementId: "G-X4C19X83YL",
 };
 
+// Initialize Firebase app and services
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 
+// Main App Component
 function App() {
-  const [user] = useAuthState(auth);
-  const [displayName, setDisplayName] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [user] = useAuthState(auth); // Current user state
+  const [displayName, setDisplayName] = useState(""); // User's display name
+  const [showModal, setShowModal] = useState(false); // Modal visibility state
 
+  // Check if user document exists, otherwise show modal for setting display name
   useEffect(() => {
     if (user) {
       const userRef = doc(firestore, "users", user.uid);
@@ -73,6 +80,7 @@ function App() {
   );
 }
 
+// Header Component: Shows app title, user's profile, and sign-out button
 function Header({ user, displayName }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -80,6 +88,7 @@ function Header({ user, displayName }) {
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const handleSignOut = () => auth.signOut();
 
+  // Close dropdown when clicking outside
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownOpen(false);
@@ -115,6 +124,7 @@ function Header({ user, displayName }) {
   );
 }
 
+// SignIn Component: Button to sign in using Google authentication
 function SignIn() {
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -128,6 +138,7 @@ function SignIn() {
   );
 }
 
+// DisplayNameModal Component: Modal for setting display name on first login
 function DisplayNameModal({ setDisplayName }) {
   const [inputValue, setInputValue] = useState("");
 
@@ -163,12 +174,14 @@ function DisplayNameModal({ setDisplayName }) {
   );
 }
 
+// ChatMessage Component: Individual chat message with optional animated typing effect
 function ChatMessage({ message }) {
   const { text, uid, photoURL, displayName } = message;
   const messageClass = uid === auth.currentUser.uid ? "sent" : "received";
 
   const [animatedText, setAnimatedText] = useState("");
 
+  // Typing animation effect
   useEffect(() => {
     let i = 0;
     const speed = 50;
@@ -200,8 +213,9 @@ function ChatMessage({ message }) {
   );
 }
 
+// Chat Component: Main chat interface with typing indicators and message sending
 function Chat({ displayName }) {
-  const dummy = useRef(); // Reference to the bottom of the chat
+  const dummy = useRef(); // Reference to the bottom of the chat for auto-scroll
   const messageReferences = collection(firestore, "poruke");
   const messagesQuery = query(messageReferences, orderBy("createdAt"));
   const [messages] = useCollectionData(messagesQuery, { idField: "id" });
@@ -209,6 +223,7 @@ function Chat({ displayName }) {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isLimitReached, setIsLimitReached] = useState(false);
 
+  // Debounced function for updating typing status in Firestore
   const updateTypingStatus = debounce(async (isTyping) => {
     const typingDocRef = doc(firestore, "typingStatus", "status");
     if (isTyping) {
@@ -222,13 +237,14 @@ function Chat({ displayName }) {
     }
   }, 100);
 
+  // Auto-scroll to the bottom of the chat when new messages arrive
   useEffect(() => {
-    // Scroll to the bottom when messages are updated
     if (dummy.current) {
       dummy.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
+  // Update typing status when user types in input
   const handleInputChange = (e) => {
     const value = e.target.value;
     setFormValue(value);
@@ -236,8 +252,8 @@ function Chat({ displayName }) {
     updateTypingStatus(Boolean(value.trim()));
   };
 
+  // Smooth scroll to bottom after each message is added
   useEffect(() => {
-    // Scroll to the bottom with a delay to ensure full rendering of messages
     const scrollToBottom = () => {
       if (dummy.current) {
         dummy.current.scrollIntoView({ behavior: "smooth" });
@@ -245,8 +261,9 @@ function Chat({ displayName }) {
     };
     const timeoutId = setTimeout(scrollToBottom, 100); // 100ms delay
     return () => clearTimeout(timeoutId);
-  }, [messages]); // Triggers on message update
+  }, [messages]);
 
+  // Send message and reset form and typing status
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!formValue.trim()) return;
@@ -265,7 +282,6 @@ function Chat({ displayName }) {
     setIsLimitReached(false);
     updateTypingStatus(false);
 
-    // Scroll to the bottom smoothly after sending a message
     setTimeout(() => {
       if (dummy.current) {
         dummy.current.scrollIntoView({ behavior: "smooth" });
@@ -273,6 +289,7 @@ function Chat({ displayName }) {
     }, 100); // Short delay to allow rendering
   };
 
+  // Real-time subscription to typing status
   useEffect(() => {
     const typingDocRef = doc(firestore, "typingStatus", "status");
     const unsubscribe = onSnapshot(typingDocRef, (doc) => {
@@ -292,6 +309,7 @@ function Chat({ displayName }) {
     return () => unsubscribe();
   }, []);
 
+  // Display typing indicator based on other users' activity
   const typingIndicator =
     typingUsers.length > 1
       ? "Multiple people are typing"
@@ -304,7 +322,7 @@ function Chat({ displayName }) {
       <main>
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-        <div ref={dummy}></div> {/* Dummy div at the bottom to scroll to */}
+        <div ref={dummy}></div> {/* Dummy div for scrolling */}
       </main>
 
       {typingIndicator && (
