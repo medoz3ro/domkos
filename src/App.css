@@ -272,6 +272,9 @@ button[type="submit"]:disabled,
   gap: 8px;
   color: #999999;
   font-size: 14px;
+
+  background-color: #1e1e1e;
+
 }
 
 .dot-typing {
@@ -283,7 +286,7 @@ button[type="submit"]:disabled,
   display: inline-block;
   width: 8px;
   height: 8px;
-  background-color: #4a90e2;
+  background-color: #999999;
   border-radius: 50%;
   animation: blink 1.5s infinite;
 }

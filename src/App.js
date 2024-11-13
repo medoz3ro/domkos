@@ -22,7 +22,6 @@ import {
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { useEffect, useState, useRef } from "react";
-import { debounce } from "lodash";
 
 // Firebase configuration object
 const firebaseConfig = {
