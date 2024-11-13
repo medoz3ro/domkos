@@ -104,7 +104,11 @@ function Header({ user, displayName }) {
 
   return (
     <header>
-      <div className="header-title">💬 Benjamin Sabo 💬</div>
+      <div className="header-title">
+      <a href="/CV_SABO.pdf" target="_blank" rel="noopener noreferrer" download>
+          💬 Benjamin Sabo 💬
+        </a>
+      </div>
       <div className="header-profile" ref={dropdownRef}>
         {user ? (
           <div className="profile" onClick={toggleDropdown}>
@@ -223,23 +227,26 @@ function Chat({ displayName }) {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isLimitReached, setIsLimitReached] = useState(false);
 
-  // Debounced function for updating typing status in Firestore
-  // Update typing status in Firestore and reset typing on message send or clear
-// Remove debounce or set a lower delay to make sure updates are near-instant
-const updateTypingStatus = async (isTyping) => {
-  const typingDocRef = doc(firestore, "typingStatus", "status");
+  const typingTimeout = useRef(null);
 
-  // Only update typing status in Firestore if it's different from the last state
-  if (isTyping) {
-    await setDoc(
-      typingDocRef,
-      { uid: auth.currentUser.uid, name: displayName },
-      { merge: true }
-    );
-  } else {
-    await setDoc(typingDocRef, { uid: null, name: null }, { merge: true });
-  }
-};
+  const updateTypingStatus = async (isTyping) => {
+    clearTimeout(typingTimeout.current); // Clear any existing timeout
+  
+    typingTimeout.current = setTimeout(async () => {
+      const typingDocRef = doc(firestore, "typingStatus", "status");
+  
+      if (isTyping) {
+        await setDoc(
+          typingDocRef,
+          { uid: auth.currentUser.uid, name: displayName },
+          { merge: true }
+        );
+      } else {
+        await setDoc(typingDocRef, { uid: null, name: null }, { merge: true });
+      }
+    }, 300); // Adjust debounce delay as necessary
+  };
+  
 
 
 
@@ -331,10 +338,10 @@ const updateTypingStatus = async (isTyping) => {
   return (
     <div className="chat-container">
       <main>
-      {messages &&
-  messages.map((msg) => (
-    <ChatMessage key={msg.id} message={msg} />
-  ))}
+      {messages && messages.map((msg, index) => (
+  <ChatMessage key={msg.id || index} message={msg} />
+))}
+
 
         <div ref={dummy}></div> {/* Dummy div for scrolling */}
       </main>

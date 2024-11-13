@@ -354,10 +354,18 @@ button[type="submit"]:disabled,
   }
 }
 
-.header-title {
-  font-size: 1.5em;
+
+.header-title a {
   text-align: center;
+  font-size: 1.5em;
   color: #d0d0d0;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.header-title a:hover {
+  color: #f0f0f0;
 }
 
 .header-profile {
