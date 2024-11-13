@@ -17,7 +17,6 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-
 // Import hooks for Firebase authentication and Firestore data
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -105,7 +104,7 @@ function Header({ user, displayName }) {
   return (
     <header>
       <div className="header-title">
-      <a href="/CV_SABO.pdf" target="_blank" rel="noopener noreferrer" download>
+        <a href="/CV_SABO.pdf" target="_blank" rel="noopener noreferrer" download>
           💬 Benjamin Sabo 💬
         </a>
       </div>
@@ -151,11 +150,7 @@ function DisplayNameModal({ setDisplayName }) {
     if (inputValue.trim()) {
       const userRef = doc(firestore, "users", auth.currentUser.uid);
 
-      await setDoc(
-        userRef,
-        { displayName: inputValue.trim() },
-        { merge: true }
-      );
+      await setDoc(userRef, { displayName: inputValue.trim() }, { merge: true });
       setDisplayName(inputValue.trim());
     }
   };
@@ -228,18 +223,15 @@ function Chat({ displayName }) {
   const [isLimitReached, setIsLimitReached] = useState(false);
 
   // Updates typing status in Firestore for the current user
-const updateTypingStatus = async (isTyping) => {
-  const typingDocRef = doc(firestore, "typingStatus", auth.currentUser.uid);
+  const updateTypingStatus = async (isTyping) => {
+    const typingDocRef = doc(firestore, "typingStatus", auth.currentUser.uid);
 
-  if (isTyping) {
-    await setDoc(typingDocRef, { name: displayName, typing: true });
-  } else {
-    await setDoc(typingDocRef, { typing: false }, { merge: true });
-  }
-};
-  
-
-
+    if (isTyping) {
+      await setDoc(typingDocRef, { name: displayName, typing: true });
+    } else {
+      await setDoc(typingDocRef, { typing: false }, { merge: true });
+    }
+  };
 
   // Auto-scroll to the bottom of the chat when new messages arrive
   useEffect(() => {
@@ -253,13 +245,10 @@ const updateTypingStatus = async (isTyping) => {
     const value = e.target.value;
     setFormValue(value);
     setIsLimitReached(value.length >= 100);
-  
+
     // Clear typing status if the input is empty
     updateTypingStatus(Boolean(value.trim()));
   };
-  
-  
-  
 
   // Smooth scroll to bottom after each message is added
   useEffect(() => {
@@ -273,55 +262,51 @@ const updateTypingStatus = async (isTyping) => {
   }, [messages]);
 
   // Clear typing status on form submission
-const sendMessage = async (e) => {
-  e.preventDefault();
-  if (!formValue.trim()) return;
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    if (!formValue.trim()) return;
 
-  const { uid, photoURL } = auth.currentUser;
+    const { uid, photoURL } = auth.currentUser;
 
-  await addDoc(messageReferences, {
-    text: formValue,
-    createdAt: serverTimestamp(),
-    uid,
-    photoURL,
-    displayName,
-  });
+    await addDoc(messageReferences, {
+      text: formValue,
+      createdAt: serverTimestamp(),
+      uid,
+      photoURL,
+      displayName,
+    });
 
-  setFormValue("");
-  setIsLimitReached(false);
-  updateTypingStatus(false);
-};
-  
+    setFormValue("");
+    setIsLimitReached(false);
+    updateTypingStatus(false);
+  };
 
   // Real-time subscription to typing status
   useEffect(() => {
     const typingCollectionRef = collection(firestore, "typingStatus");
-  
+
     const unsubscribe = onSnapshot(typingCollectionRef, (snapshot) => {
       const activeTypingUsers = snapshot.docs
         .filter((doc) => doc.data().typing && doc.id !== auth.currentUser.uid)
         .map((doc) => doc.data().name);
-  
+
       setTypingUsers(activeTypingUsers);
     });
-  
+
     return () => unsubscribe();
   }, []);
-  
 
   // Display typing indicator based on other users' activity
   const typingIndicator = typingUsers.length
-  ? typingUsers.join(", ") + (typingUsers.length > 1 ? " are typing" : " is typing")
-  : null;
+    ? typingUsers.join(", ") + (typingUsers.length > 1 ? " are typing" : " is typing")
+    : null;
 
   return (
     <div className="chat-container">
       <main>
-      {messages && messages.map((msg, index) => (
-  <ChatMessage key={msg.id || index} message={msg} />
-))}
-
-
+        {messages && messages.map((msg, index) => (
+          <ChatMessage key={msg.id || index} message={msg} />
+        ))}
         <div ref={dummy}></div> {/* Dummy div for scrolling */}
       </main>
 
