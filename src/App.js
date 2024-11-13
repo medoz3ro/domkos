@@ -227,25 +227,16 @@ function Chat({ displayName }) {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isLimitReached, setIsLimitReached] = useState(false);
 
-  const typingTimeout = useRef(null);
+  // Updates typing status in Firestore for the current user
+const updateTypingStatus = async (isTyping) => {
+  const typingDocRef = doc(firestore, "typingStatus", auth.currentUser.uid);
 
-  const updateTypingStatus = async (isTyping) => {
-    clearTimeout(typingTimeout.current); // Clear any existing timeout
-  
-    typingTimeout.current = setTimeout(async () => {
-      const typingDocRef = doc(firestore, "typingStatus", "status");
-  
-      if (isTyping) {
-        await setDoc(
-          typingDocRef,
-          { uid: auth.currentUser.uid, name: displayName },
-          { merge: true }
-        );
-      } else {
-        await setDoc(typingDocRef, { uid: null, name: null }, { merge: true });
-      }
-    }, 300); // Adjust debounce delay as necessary
-  };
+  if (isTyping) {
+    await setDoc(typingDocRef, { name: displayName, typing: true });
+  } else {
+    await setDoc(typingDocRef, { typing: false }, { merge: true });
+  }
+};
   
 
 
@@ -281,46 +272,37 @@ function Chat({ displayName }) {
     return () => clearTimeout(timeoutId);
   }, [messages]);
 
-  // Send message and reset form and typing status
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!formValue.trim()) return;
-  
-    const { uid, photoURL } = auth.currentUser;
-  
-    await addDoc(messageReferences, {
-      text: formValue,
-      createdAt: serverTimestamp(),
-      uid,
-      photoURL,
-      displayName,
-    });
-  
-    setFormValue("");
-    setIsLimitReached(false);
-    updateTypingStatus(false); // Reset typing status after message is sent
-  
-    setTimeout(() => {
-      if (dummy.current) {
-        dummy.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 100); // Short delay to allow rendering
-  };
+  // Clear typing status on form submission
+const sendMessage = async (e) => {
+  e.preventDefault();
+  if (!formValue.trim()) return;
+
+  const { uid, photoURL } = auth.currentUser;
+
+  await addDoc(messageReferences, {
+    text: formValue,
+    createdAt: serverTimestamp(),
+    uid,
+    photoURL,
+    displayName,
+  });
+
+  setFormValue("");
+  setIsLimitReached(false);
+  updateTypingStatus(false);
+};
   
 
   // Real-time subscription to typing status
   useEffect(() => {
-    const typingDocRef = doc(firestore, "typingStatus", "status");
+    const typingCollectionRef = collection(firestore, "typingStatus");
   
-    const unsubscribe = onSnapshot(typingDocRef, (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        if (data.uid && data.uid !== auth.currentUser.uid) {
-          setTypingUsers([data.name]); // Only track the latest typing user
-        } else {
-          setTypingUsers([]); // Clear typing users when no one is typing
-        }
-      }
+    const unsubscribe = onSnapshot(typingCollectionRef, (snapshot) => {
+      const activeTypingUsers = snapshot.docs
+        .filter((doc) => doc.data().typing && doc.id !== auth.currentUser.uid)
+        .map((doc) => doc.data().name);
+  
+      setTypingUsers(activeTypingUsers);
     });
   
     return () => unsubscribe();
@@ -328,12 +310,9 @@ function Chat({ displayName }) {
   
 
   // Display typing indicator based on other users' activity
-  const typingIndicator =
-    typingUsers.length > 1
-      ? "Multiple people are typing"
-      : typingUsers.length === 1
-      ? `${typingUsers[0]} is typing`
-      : null;
+  const typingIndicator = typingUsers.length
+  ? typingUsers.join(", ") + (typingUsers.length > 1 ? " are typing" : " is typing")
+  : null;
 
   return (
     <div className="chat-container">
