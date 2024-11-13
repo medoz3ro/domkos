@@ -313,7 +313,7 @@ button[type="submit"]:disabled,
 @media (max-width: 600px) {
   .App {
     margin-top: 60px;
-    width: 350px;
+    width: 350px
   }
 
   .chat-container {

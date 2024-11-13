@@ -17,6 +17,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
+
 // Import hooks for Firebase authentication and Firestore data
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -224,18 +225,24 @@ function Chat({ displayName }) {
   const [isLimitReached, setIsLimitReached] = useState(false);
 
   // Debounced function for updating typing status in Firestore
-  const updateTypingStatus = debounce(async (isTyping) => {
-    const typingDocRef = doc(firestore, "typingStatus", "status");
-    if (isTyping) {
-      await setDoc(
-        typingDocRef,
-        { uid: auth.currentUser.uid, name: displayName },
-        { merge: true }
-      );
-    } else {
-      await setDoc(typingDocRef, { uid: null, name: null }, { merge: true });
-    }
-  }, 100);
+  // Update typing status in Firestore and reset typing on message send or clear
+// Remove debounce or set a lower delay to make sure updates are near-instant
+const updateTypingStatus = async (isTyping) => {
+  const typingDocRef = doc(firestore, "typingStatus", "status");
+
+  // Only update typing status in Firestore if it's different from the last state
+  if (isTyping) {
+    await setDoc(
+      typingDocRef,
+      { uid: auth.currentUser.uid, name: displayName },
+      { merge: true }
+    );
+  } else {
+    await setDoc(typingDocRef, { uid: null, name: null }, { merge: true });
+  }
+};
+
+
 
   // Auto-scroll to the bottom of the chat when new messages arrive
   useEffect(() => {
@@ -249,8 +256,13 @@ function Chat({ displayName }) {
     const value = e.target.value;
     setFormValue(value);
     setIsLimitReached(value.length >= 100);
+  
+    // Clear typing status if the input is empty
     updateTypingStatus(Boolean(value.trim()));
   };
+  
+  
+  
 
   // Smooth scroll to bottom after each message is added
   useEffect(() => {
@@ -267,9 +279,9 @@ function Chat({ displayName }) {
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!formValue.trim()) return;
-
+  
     const { uid, photoURL } = auth.currentUser;
-
+  
     await addDoc(messageReferences, {
       text: formValue,
       createdAt: serverTimestamp(),
@@ -277,37 +289,37 @@ function Chat({ displayName }) {
       photoURL,
       displayName,
     });
-
+  
     setFormValue("");
     setIsLimitReached(false);
-    updateTypingStatus(false);
-
+    updateTypingStatus(false); // Reset typing status after message is sent
+  
     setTimeout(() => {
       if (dummy.current) {
         dummy.current.scrollIntoView({ behavior: "smooth" });
       }
     }, 100); // Short delay to allow rendering
   };
+  
 
   // Real-time subscription to typing status
   useEffect(() => {
     const typingDocRef = doc(firestore, "typingStatus", "status");
+  
     const unsubscribe = onSnapshot(typingDocRef, (doc) => {
       if (doc.exists()) {
         const data = doc.data();
         if (data.uid && data.uid !== auth.currentUser.uid) {
-          setTypingUsers((prevUsers) => [
-            ...new Set([...prevUsers, data.name]),
-          ]);
+          setTypingUsers([data.name]); // Only track the latest typing user
         } else {
-          setTypingUsers((prevUsers) =>
-            prevUsers.filter((name) => name !== data.name)
-          );
+          setTypingUsers([]); // Clear typing users when no one is typing
         }
       }
     });
+  
     return () => unsubscribe();
   }, []);
+  
 
   // Display typing indicator based on other users' activity
   const typingIndicator =
@@ -320,8 +332,11 @@ function Chat({ displayName }) {
   return (
     <div className="chat-container">
       <main>
-        {messages &&
-          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+      {messages &&
+  messages.map((msg) => (
+    <ChatMessage key={msg.id} message={msg} />
+  ))}
+
         <div ref={dummy}></div> {/* Dummy div for scrolling */}
       </main>
 
