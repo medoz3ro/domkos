@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: #efefe9;
+  background-color: #1e1e1e;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #959d90;
+  background-color: #2f2f2f;
   color: #ffffff;
   width: 100%;
   text-align: center;
@@ -36,9 +36,9 @@ header {
   flex-direction: column;
   height: calc(100vh - 60px);
   width: 500px;
-  background-color: #e8d9cd;
+  background-color: #2a2a2a;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   margin-top: 50px;
 }
@@ -47,14 +47,15 @@ main {
   flex: 1;
   padding: 15px;
   overflow-y: auto;
+  background-color: #1e1e1e;
 }
 
 form {
   display: flex;
   justify-content: center;
   padding: 10px;
-  background-color: #e8d9cd;
-  border-top: 1px solid #e0e0e0;
+  background-color: #2a2a2a;
+  border-top: 1px solid #3a3a3a;
   position: sticky;
   bottom: 0;
 }
@@ -63,31 +64,32 @@ input[type="text"] {
   flex: 1;
   padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #3a3a3a;
   border-radius: 20px;
   margin-right: 10px;
   outline: none;
-  background-color: #efefe9;
+  background-color: #3a3a3a;
+  color: #ffffff;
 }
 
 button[type="submit"] {
   padding: 12px 20px;
   font-size: 16px;
   border: none;
-  background-color: #223030;
+  background-color: #4a4a4a;
   color: white;
   border-radius: 20px;
   cursor: pointer;
 }
 
 button[type="submit"]:hover {
-  background-color: #223030;
+  background-color: #5a5a5a;
 }
 
 button[type="submit"]:disabled,
 .disabled-button {
-  background-color: #cccccc;
-  color: #666666;
+  background-color: #666666;
+  color: #999999;
   cursor: not-allowed;
 }
 
@@ -111,13 +113,13 @@ button[type="submit"]:disabled,
   text-align: left;
   word-wrap: break-word;
   white-space: normal;
-  background-color: #959d90;
+  background-color: #444444;
 }
 
 .received {
   margin-right: auto;
-  background-color: #efefe9;
-  color: black;
+  background-color: #333333;
+  color: white;
   border-radius: 15px 15px 15px 0;
   padding: 8px 12px;
   font-size: 14px;
@@ -159,7 +161,7 @@ button[type="submit"]:disabled,
 .display-name {
   font-weight: bold;
   margin-bottom: 4px;
-  color: #333;
+  color: #b0b0b0;
 }
 
 .message p {
@@ -172,7 +174,7 @@ button[type="submit"]:disabled,
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,7 +182,8 @@ button[type="submit"]:disabled,
 }
 
 .modal {
-  background: white;
+  background: #2f2f2f;
+  color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   max-width: 450px;
@@ -191,6 +194,9 @@ button[type="submit"]:disabled,
   width: 100%;
   padding: 8px;
   margin-top: 10px;
+  background-color: #444444;
+  border: 1px solid #555555;
+  color: white;
 }
 
 .modal button {
@@ -200,7 +206,7 @@ button[type="submit"]:disabled,
 .display-name-header {
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: #d0d0d0;
   margin: 0;
 }
 
@@ -222,7 +228,7 @@ button[type="submit"]:disabled,
   padding: 12px 20px;
   font-size: 16px;
   border: none;
-  background-color: #223030;
+  background-color: #4a4a4a;
   color: white;
   border-radius: 20px;
   cursor: pointer;
@@ -230,17 +236,17 @@ button[type="submit"]:disabled,
 }
 
 .sign-in-button:hover {
-  background-color: #223030;
+  background-color: #5a5a5a;
 }
 
 .dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #223030;
+  background-color: #333333;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
   z-index: 1000;
   min-width: 150px;
 }
@@ -257,14 +263,14 @@ button[type="submit"]:disabled,
 }
 
 .dropdown-menu button:hover {
-  background-color: #555;
+  background-color: #555555;
 }
 
 .typing-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #888;
+  color: #999999;
   font-size: 14px;
 }
 
@@ -277,7 +283,7 @@ button[type="submit"]:disabled,
   display: inline-block;
   width: 8px;
   height: 8px;
-  background-color: #3b5998;
+  background-color: #4a90e2;
   border-radius: 50%;
   animation: blink 1.5s infinite;
 }
@@ -294,9 +300,11 @@ button[type="submit"]:disabled,
   0% {
     opacity: 0.2;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.2;
   }
@@ -305,7 +313,7 @@ button[type="submit"]:disabled,
 @media (max-width: 600px) {
   .App {
     margin-top: 60px;
-    width: 300px;
+    width: 350px;
   }
 
   .chat-container {
@@ -346,6 +354,7 @@ button[type="submit"]:disabled,
 .header-title {
   font-size: 1.5em;
   text-align: center;
+  color: #d0d0d0;
 }
 
 .header-profile {
@@ -359,4 +368,7 @@ input[type="email"],
 input[type="number"],
 textarea {
   font-size: 16px;
+  background-color: #333333;
+  border: 1px solid #444444;
+  color: #ffffff;
 }
