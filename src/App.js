@@ -43,6 +43,7 @@ function App() {
   const [user] = useAuthState(auth); // Current user state
   const [displayName, setDisplayName] = useState(""); // User's display name
   const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
   // Check if user document exists, otherwise show modal for setting display name
   useEffect(() => {
@@ -59,9 +60,23 @@ function App() {
     }
   }, [user]);
 
+  useEffect(() => {
+    document.body.className = theme === "dark" ? "" : "light-mode";
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+  };
+
   return (
     <div>
-      <Header user={user} displayName={displayName} />
+      <Header
+        user={user}
+        displayName={displayName}
+        toggleTheme={toggleTheme}
+        theme={theme}  // Pass the theme here
+      />
       <div className="App">
         <section>
           {user ? (
@@ -80,14 +95,13 @@ function App() {
 }
 
 // Header Component: Shows app title, user's profile, and sign-out button
-function Header({ user, displayName }) {
+function Header({ user, displayName, toggleTheme, theme }) { // Add theme to the parameter list
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const handleSignOut = () => auth.signOut();
 
-  // Close dropdown when clicking outside
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownOpen(false);
@@ -115,6 +129,9 @@ function Header({ user, displayName }) {
             <span className="display-name-header">{displayName}</span>
             {isDropdownOpen && (
               <div className="dropdown-menu">
+                <button onClick={toggleTheme}>
+                  {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                </button>
                 <button onClick={handleSignOut}>Odjavi se</button>
               </div>
             )}

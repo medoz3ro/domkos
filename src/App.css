@@ -378,3 +378,84 @@ textarea {
   border: 1px solid #444444;
   color: #ffffff;
 }
+
+
+
+.light-mode {
+  background-color: #f9f9f9;
+  color: #333333;
+}
+
+.light-mode header {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.light-mode body {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.light-mode .App {
+  background-color: #ffffff;
+}
+
+.light-mode .received {
+  background-color: #ffffff;
+  color: #333333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.light-mode .sent {
+  background-color: #e1f5fe;
+  color: #333333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.light-mode input[type="text"] {
+  background-color: #e6e6e6;
+  color: #333333;
+}
+
+.light-mode button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+.light-mode button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.light-mode .dropdown-menu {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.light-mode .modal {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Light Mode for Dropdown Menu */
+.light-mode .dropdown-menu {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.light-mode .dropdown-menu button {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.light-mode .dropdown-menu button:hover {
+  background-color: #e6e6e6;
+}
+
+.light-mode main {
+  background-color: #ffffff;
+}
+
+.light-mode form {
+  background-color: #ffffff;
+  border-top: 0px solid;
+}
