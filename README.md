@@ -1,70 +1,135 @@
-# Getting Started with Create React App
+# Domkos
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+**Domkos** is a web application built with React and Firebase, designed to provide a seamless and interactive user experience. It features user authentication, real-time communication, and advanced UI/UX functionalities.
 
-## Available Scripts
+## Features
+- Google Login/Register: Secure user authentication via Google OAuth.
+- Dark/Light Mode: Toggle between themes for a personalized experience.
+- Chatting: Real-time messaging functionality with Firebase.
+- Typing Indicator: See when someone is typing in a chat.
+- Logout: Securely log out from your account.
+- Download CV: Option to download the user's CV directly from the header.
 
-In the project directory, you can run:
+## Prerequisites
+- Node.js >= 14
+- Firebase CLI installed
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd domkos
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### `npm test`
+3. Set up environment variables:
+   ```bash
+   # Create a .env file in the root directory
+   touch .env
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   # Add Firebase credentials in the following format:
+   echo "REACT_APP_FIREBASE_API_KEY=your-api-key" >> .env
+   echo "REACT_APP_FIREBASE_AUTH_DOMAIN=your-auth-domain" >> .env
+   echo "REACT_APP_FIREBASE_PROJECT_ID=your-project-id" >> .env
+   echo "REACT_APP_FIREBASE_STORAGE_BUCKET=your-storage-bucket" >> .env
+   echo "REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-sender-id" >> .env
+   echo "REACT_APP_FIREBASE_APP_ID=your-app-id" >> .env
+   ```
 
-### `npm run build`
+## Scripts
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Start the development server:**
+  ```bash
+  npm start
+  ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Build for production:**
+  ```bash
+  npm run build
+  ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Run tests:**
+  ```bash
+  npm test
+  ```
 
-### `npm run eject`
+- **Eject configurations:**
+  ```bash
+  npm run eject
+  ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Deployment
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Build the project:
+   ```bash
+   npm run build
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Deploy using Firebase:
+   ```bash
+   firebase deploy
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Project Structure
 
-## Learn More
+- **src/components**: React components for the UI.
+- **src/context**: Context API for managing themes (Dark/Light Mode) and global states.
+- **src/firebase**: Firebase configuration and utility functions for authentication, messaging, and storage.
+- **src/pages**: Main pages of the application (e.g., Home, Login, Chat).
+- **public/**: Static assets and metadata.
+- **functions/**: Backend logic implemented using Firebase Cloud Functions.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Core Functionalities
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Google Login/Register
+```bash
+firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+```
 
-### Code Splitting
+### Dark/Light Mode
+```bash
+toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Real-Time Chatting
+```bash
+const chatRef = firebase.firestore().collection('chats');
+chatRef.add({ message: 'Hello', timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+```
 
-### Analyzing the Bundle Size
+### Typing Indicator
+```bash
+chatRef.doc('chatId').update({ typing: true });
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Logout
+```bash
+firebase.auth().signOut();
+```
 
-### Making a Progressive Web App
+### Download CV
+```bash
+<a href="/path-to-cv.pdf" download>Download CV</a>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Key Dependencies
+- **react**: Library for building the user interface.
+- **firebase**: Firebase SDK for authentication and real-time database.
+- **react-firebase-hooks**: Simplified Firebase interaction.
+- **lodash**: Utility functions for JavaScript.
+- **react-router-dom**: Navigation between pages.
 
-### Advanced Configuration
+## Contributing
+Contributions are welcome! Feel free to fork the repository and submit a pull request.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## License
+This project is licensed under the MIT License.
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Acknowledgments
+Special thanks to open-source contributors and libraries that made this project possible.
